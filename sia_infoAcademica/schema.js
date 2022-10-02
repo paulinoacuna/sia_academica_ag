@@ -5,65 +5,48 @@ import { buildSchema } from "graphql"
  * The GraphQL schema in string form
  * @type {GraphQLSchema} schema
  */
+
+// pacuna
+
 const schema = buildSchema(`
     type Query {
-        user(username: String): User
+        user(username: String): HistoriaAcademica
     }
-    type User {
-        nombre_usuario: String
-        nombre_completo: String
-        documento_identidad: String
-        lugar_expedicion: String
-        sexo: String
-        etnia: String
-        email_personal: String
-        email_institucional: String
-        telefono_movil: String
-        fecha_nacimiento: String
-        lugar_nacimiento: String
-        nacionalidad: String
-        tipo_sangre: String
-        eps: String
-        situacion_militar: String
-        responsables: [Responsable]
-        vivienda: [Vivienda]
+
+    type HistoriaAcademica {
+        _documento_identidad: String
+        _id_historia: String
+        _id_programa: String
+        _porcentaje_avance: String
+        _papa: String
+        _pa: String
+        _semestreActual: String
+        _pappi: String
+        _asignaturas: [Asignatura]
     }
-    type Responsable {
-        responsable_nombre: String
-        responsable_tipo_doc: String
-        responsable_numero_doc: String
-        responsable_telefono: String
+
+    type Asignatura {
+        _codigo: String
+        _nombre: String
+        _creditos: String
+        _tipo: String
+        _periodo: String
+        _esConsolidada: String
+        _calificaciones: [Calificacion]
+        _definitiva: String
+        _esAprobada: String
     }
-    type Vivienda {
-        vivienda_tipo: String
-        vivienda_direccion: String
-        vivienda_departamento: String
-        vivienda_codigo_postal: String
-        vivienda_telefono: String
-        vivienda_estrato: String
+
+    type Calificacion {
+        _nombre: String
+        _nota: String
+        _porcentaje: String
     }
-    input ViviendaInput {
-        vivienda_tipo: String
-        vivienda_direccion: String
-        vivienda_departamento: String
-        vivienda_codigo_postal: String
-        vivienda_telefono: String
-        vivienda_estrato: String
-    }
+
     type Message {
         message: String
     }
-    type Mutation {
-        updateUser(
-            nombre_usuario: String
-            lugar_expedicion: String
-            email_personal: String
-            telefono_movil: String
-            eps: String
-            situacion_militar: String
-            vivienda: [ViviendaInput]
-        ): Message
-    }
+    
 `)
 
 
