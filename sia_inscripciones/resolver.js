@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { API_URL } from "./index.js";
-import { RpcClient } from "./rpc_client.js";
+import { callRpc } from "./rpc_client.js";
 
 /**
  * Provide a resolver function for each API endpoint (query)
@@ -30,6 +30,9 @@ export const root = {
     // Use http://127.0.0.1:4000/curso
     return fetch(`${API_URL}/curso`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
       body: JSON.stringify(args),
     })
@@ -39,14 +42,11 @@ export const root = {
         return { message: data };
       });
   },
-  inscribirEstudiante: (args) => {
+  inscribirEstudiante: async (args) => {
     // Use RpcClient to send a message to the queue and get the response
-    let client = new RpcClient();
-    client.call(args);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: client.getResponse() });
-      }, 300);
+    return callRpc(args).then((res) => {
+      console.log("res: ", res);
+      return { message: res };
     });
   },
   ingresarProfesor: (args) => {
