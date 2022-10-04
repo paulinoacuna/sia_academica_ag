@@ -4,6 +4,7 @@ import routes from "./routes.js";
 
 import { INFO_ACADEMICA } from "./sia_infoAcademica/index.js";
 import { INSCRIPCIONES } from "./sia_inscripciones/index.js";
+import { BUSCADOR_CURSOS } from "./sia_buscadorMaterias/index.js";
 
 const app = express();
 const port = 4001;

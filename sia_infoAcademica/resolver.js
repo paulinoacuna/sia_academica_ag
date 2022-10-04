@@ -11,26 +11,15 @@ import { API_URL } from "./index.js"
 export const root = {
     user: (arg) => {
         // Use http://127.0.0.1:8000/user/<username> to get the user data via GET to request the user data
-        return fetch(`${API_URL}/user/${arg.username}`)
+        return fetch(`${API_URL}/historiaAcademica/${arg.username}`)
+
+            
             .then(response => response.json())
             .then(data => {
-                    return data.items[0]
+                    console.log(data)
+                    return data
                 }
             )
     },
 
-    updateUser: (args) => {
-        // use http://127.0.0.1:8000/update via PUT to update the user data
-        return fetch(`${API_URL}/update`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(args)
-        })
-            .then(response => response.json())
-            .then(data => {
-                return data
-            })
-    }
 }
