@@ -7,15 +7,7 @@ import { buildSchema } from "graphql";
 
 const schema = buildSchema(`
     type Query {
-        cursos(id: String): CursoInscrito
-    }
-    type Curso {
-        id_curso: String!
-        codigo_asignatura: Int!
-        grupo: Int!
-        horarios: [Horario]
-        cupos_disponibles: Int
-        cupos_totales: Int
+        inscripcionByIdCurso(id_curso: String): [CursoInscritoFilter]
     }
     type Horario {
         dia: Int
@@ -36,6 +28,10 @@ const schema = buildSchema(`
     type CursoInscrito {
         id_curso: String!
         documento_estudiante: String!
+    }
+    type CursoInscritoFilter {
+        id_curso: String
+        documento_estudiante: String
     }
     type Profesor {
         documento_identidad: String!

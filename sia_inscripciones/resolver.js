@@ -10,8 +10,23 @@ import { RpcClient } from "./rpc_client.js";
  */
 
 export const root = {
+  // Use http://127.0.0.1:4000/inscripcion/[id_curso]
+  inscripcionByIdCurso: (args) => {
+    let id = args.id_curso;
+    console.log("id: ", id);
+    return fetch(`${API_URL}/inscripcion/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("res: ", res);
+        return res;
+      });
+  },
   ingresarCurso: (args) => {
-    let response = "";
     // Use http://127.0.0.1:4000/curso
     return fetch(`${API_URL}/curso`, {
       method: "POST",
@@ -51,6 +66,12 @@ export const root = {
 };
 
 /*
+Para filtrar curso por id_curso, se debe usar la siguiente consulta:
+query cursoInscritoById {inscripcionByIdCurso(id_curso: "002")
+	{
+    documento_estudiante
+  }
+}
 Para ingresar un curso se debe enviar un JSON con la siguiente estructura:
 mutation ingresarCurso {
   ingresarCurso(id_curso: "023", codigo_asignatura: 1, grupo: 22, horarios: {
