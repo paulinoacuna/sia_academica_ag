@@ -1,10 +1,10 @@
 import { buildSchema } from "graphql"
 
+
 /**
  * The GraphQL schema in string form
  * @type {GraphQLSchema} schema
  */
-
 const schema = buildSchema(`
     type Query {
         listGrades(id: Int, asignature: Int): [Grade]
@@ -77,7 +77,6 @@ const schema = buildSchema(`
     type Message {
         message: String
     }
-    `
-)
+`)
 
 export default schema
