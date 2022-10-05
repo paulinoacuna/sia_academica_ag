@@ -9,7 +9,7 @@ import { CALIFICACIONES } from "./sia_calificaciones/index.js";
 
 
 const app = express();
-const port = 4001;
+const port = routes.current.port;
 
 // Generate the GraphQL endpoint at /info_academica using the schema and the resolver
 app.use(routes.infoAcademica.route, graphqlHTTP(INFO_ACADEMICA));

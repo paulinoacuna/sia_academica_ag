@@ -70,10 +70,8 @@ export const root = {
     createGrades: (arg) => {
         let query = `
         {
-            Tipologia(codigoAsignatura: ${arg.id_asignature}) {
-                asignatura(codigo_asignatura: ${arg.id_asignature}){
-                    codigo_asignatura
-                }
+            asignatura(codigo_asignatura: ${arg.id_asignature}) {
+                codigo_asignatura
             }
         }`
         return fetch(`${API_URL_BUSCADOR_CURSOS}`, {
@@ -88,14 +86,17 @@ export const root = {
         })
             .then(response => response.json())
             .then(data => {
+                // TODO: Must check if the asignature exists, when it does not exist, it returns a [null] value
                 return fetch(`${API_URL_INSCRIPCIONES}/inscripcion/${arg.id_asignature}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    // TODO: Should have a body with the request to be sent
                 })
                     .then(response => response.json())
                     .then(data => {
+                        // TODO: [data] is a Json with .data and .valueOFQuery properties
                         let result = _.find(data, {'documento_estudiante': arg.id_students})
                         if (result)
                         {
@@ -109,7 +110,6 @@ export const root = {
                         })
                             .then(response => response.json())
                             .then(data => {
-        
                                 return data
                             })
                         }
