@@ -17,11 +17,6 @@ app.use(routes.inscripciones.route, graphqlHTTP(INSCRIPCIONES));
 app.use(routes.calificaciones.route, graphqlHTTP(CALIFICACIONES));
 app.use(routes.buscadorMaterias.route, graphqlHTTP(BUSCADOR_CURSOS));
 
-/*
-TODO: Write here your GraphQL endpoint as follows:
-    app.use('/YOUR_ENDPOINT', graphqlHTTP(YOUR_SCHEMA_AND_RESOLVER_IMPORTED_FROM_INDEX))
-*/
-
 // Open a port to listen for requests from the client (browser), using the express app with GraphQL
 // For example: http://localhost:4000/info_personal
 app.listen(port, () =>
