@@ -51,27 +51,35 @@ const schema = buildSchema(`
             name: String
             percentage: Float
             id_students: String
-            values: Float): Grade
+            values: Float
+            ): Grade
+            
         updateGrades(
             id: Int
             id_asignature: Int
             name: String
             percentage: Float
             id_students: String
-            values: Float): Grade
-        deleteGrades(input: Int): Message
+            values: Float
+            ): Grade
+            
+        deleteGrades(
+            input: Int
+            ): Message
 
         updateAsignatures(
             id: Int
             term: String
-            consolidated: Boolean): Asignature
+            consolidated: Boolean
+            ): Asignature
             
         updateHistory(
             id: Int
             id_student: String
             id_program: Int
             percentage_adv: Float
-            asignature_taken: String): History
+            asignature_taken: String
+            ): History
     }
 
     type Message {

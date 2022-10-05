@@ -6,6 +6,7 @@ import routes from "../routes.js"
 // Expose the API URL
 export const API_URL = routes.calificaciones.url
 export const API_URL_BUSCADOR_CURSOS = routes.buscadorMaterias.url + routes.buscadorMaterias.route
+export const API_URL_INSCRIPCIONES = routes.inscripciones.url + routes.inscripciones.route
 
 // Expose the schema and the resolver
 export const CALIFICACIONES = {

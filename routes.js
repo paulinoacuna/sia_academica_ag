@@ -12,7 +12,7 @@ const routes = {
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://127.0.0.1:8000",
+    url: "http://127.0.0.1:8001",
     route: "/calificaciones",
   },
 };
