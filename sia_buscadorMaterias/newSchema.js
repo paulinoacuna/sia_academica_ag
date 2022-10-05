@@ -4,6 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLList,
+  GraphQLBoolean
 } from "graphql";
 
 import resolver from "./resolver.js";
@@ -27,8 +28,25 @@ const Asignatura = new GraphQLObjectType({
         return resolver.getPrograma(parent.id_programa);
       },
     },
+    prerequisitos: {
+      type: new GraphQLList(Prerequisito),
+      resolve: (parent) => {
+        return resolver.getPrerequisitos(parent.codigo_asignatura);
+      },
+    }
   }),
 });
+
+const Prerequisito = new GraphQLObjectType({
+  name: "Prerequisitos",
+  fields: () => ({
+    codigo_asignatura_prerequisito: { type: GraphQLInt },
+    es_correquisito: {type: GraphQLBoolean}
+  })
+})
+
+
+
 
 const Tipologia = new GraphQLObjectType({
   name: "Tipologia",
@@ -36,16 +54,6 @@ const Tipologia = new GraphQLObjectType({
     id_tipologia: { type: GraphQLInt },
     nombre_tipologia: { type: GraphQLString },
     //asignaturas: { type: new GraphQLList(Asignatura) },
-  }),
-});
-
-const Prerequisito = new GraphQLObjectType({
-  name: "Prerequisito",
-  fields: (parentValue, args) => ({
-    id: { type: GraphQLInt },
-    codigo_asignatura: { type: GraphQLString },
-    codigo_asignatura_prerequisito: { type: GraphQLString },
-    es_correquisito: { type: GraphQLString },
   }),
 });
 

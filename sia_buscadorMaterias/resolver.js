@@ -103,7 +103,7 @@ const getFacultades = async () => {
 };
 
 const getFacultad = async (id) => {
-      const query = `query Facultad($idFacultad: Int!) {
+  const query = `query Facultad($idFacultad: Int!) {
         facultad(id_facultad: $idFacultad) {
           id_facultad
           nombre_facultad
@@ -112,7 +112,7 @@ const getFacultad = async (id) => {
       }`;
   const data = await simpleGraphQLQuery(query, { idFacultad: id });
   return data.facultad;
-}
+};
 
 const getSedes = async () => {
   const query = `query Sedes {
@@ -126,7 +126,7 @@ const getSedes = async () => {
 };
 
 const getSede = async (id) => {
-      const query = `query Sede($idSede: Int!) {
+  const query = `query Sede($idSede: Int!) {
         sede(id_sede: $idSede) {
           id_sede
           nombre_sede
@@ -134,19 +134,29 @@ const getSede = async (id) => {
       }`;
   const data = await simpleGraphQLQuery(query, { idSede: id });
   return data.sede;
-}
+};
 
-const getPrerequisitos = async () => {
-  const query = `query Prerequisitos {
-        prerequisitos {
-            id
-            codigo_asignatura
-            codigo_asignatura_prerequisito
-            es_correquisito
-        }
-    }`;
-  const data = await simpleGraphQLQuery(query);
-  return data.prerequisitos;
+const getPrerequisitos = async (codigo_asignatura) => {
+  const query = `query Prerequisito($codigoAsignatura: Int!) {
+    prerequisito(codigo_asignatura: $codigoAsignatura) {
+      codigo_asignatura
+      codigo_asignatura_prerequisito
+      es_correquisito
+    }
+  }`;
+
+  const data = await simpleGraphQLQuery(query, {
+    codigoAsignatura: codigo_asignatura,
+  });
+  const prerequisito = data.prerequisito;
+  console.log("prerequisito", prerequisito);
+  //if prerequisito is null, return empty array
+  if (!prerequisito) {
+    return [];
+  }
+  //if prerequisito is not null, return array with prerequisito
+  return prerequisito;
+
 };
 
 const resolverOperations = {
