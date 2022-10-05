@@ -1,6 +1,25 @@
 import fetch from "node-fetch";
 import { API_URL } from "./index.js";
 import { callRpc } from "./rpc_client.js";
+import routes from "../routes.js";
+
+const API_URL_BUSCADOR_CURSOS = routes.buscadorMaterias.url;
+
+async function simpleGraphQLQuery(query, variables = {}) {
+  const response = await fetch(API_URL_BUSCADOR_CURSOS, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: query,
+      variables: variables,
+    }),
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      return data;
+    });
+  return response;
+}
 
 /**
  * Provide a resolver function for each API endpoint (query)
@@ -28,6 +47,20 @@ export const root = {
   },
   ingresarCurso: (args) => {
     // Use http://127.0.0.1:4000/curso
+
+    //query de asignatura
+    let query = `{
+      asignatura(codigo_asignatura: ${curso.codigo_asignatura}) {
+        codigo_asignatura
+      }
+    }
+    `;
+    //verificar que la asignatura exista
+    simpleGraphQLQuery(query).then((data) => {
+      if (data.data.asignatura == null) {
+        return { message: "La asignatura no existe" };
+      }
+    });
     return fetch(`${API_URL}/curso`, {
       method: "POST",
       headers: {
@@ -43,9 +76,20 @@ export const root = {
       });
   },
   inscribirEstudiante: async (args) => {
+    //verifica que exista el curso
+    let curso = await fetch(`${API_URL}/curso/${args.id_curso}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => res.json().then((res) => res));
+    if (curso.id_curso == null) {
+      return { message: "No existe el curso" };
+    }
+
+    console.log("curso: ", curso);
     // Use RpcClient to send a message to the queue and get the response
     return callRpc(args).then((res) => {
-      console.log("res: ", res);
       return { message: res };
     });
   },
