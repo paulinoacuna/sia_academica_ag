@@ -4,7 +4,7 @@ const routes = {
     route: "/info_academica",
   },
   buscadorMaterias: {
-    url: "http://localhost:4000",
+    url: "http://localhost:4100",
     route: "/buscador_cursos",
   },
   inscripciones: {
@@ -12,7 +12,7 @@ const routes = {
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://127.0.0.1:8000",
+    url: "http://127.0.0.1:8001",
     route: "/calificaciones"
   }
 };

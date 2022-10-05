@@ -12,11 +12,8 @@ export const root = {
     user: (arg) => {
         // Use http://127.0.0.1:8000/user/<username> to get the user data via GET to request the user data
         return fetch(`${API_URL}/historiaAcademica/${arg.username}`)
-
-            
             .then(response => response.json())
             .then(data => {
-                    console.log(data)
                     return data
                 }
             )
