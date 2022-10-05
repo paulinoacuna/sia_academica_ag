@@ -96,7 +96,10 @@ export const root = {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        return fetch(`${API_URL}/api/grades/create`, {
+                        let result = _.find(data, {'documento_estudiante': arg.id_students})
+                        if (result)
+                        {
+                            return fetch(`${API_URL}/api/grades/create`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -109,6 +112,8 @@ export const root = {
         
                                 return data
                             })
+                        }
+                        
                     })
             })
     },
