@@ -1,5 +1,5 @@
 import fetch from "node-fetch"
-import { API_URL, API_URL_BUSCADOR_CURSOS } from "./index.js"
+import { API_URL, API_URL_BUSCADOR_CURSOS, API_URL_INSCRIPCIONES } from "./index.js"
 
 
 /**
@@ -88,18 +88,27 @@ export const root = {
         })
             .then(response => response.json())
             .then(data => {
-                return fetch(`${API_URL}/api/grades/create`, {
+                return fetch(`${API_URL_INSCRIPCIONES}/inscripcion/${arg.id_asignature}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        "Accept": "application/json",
                     },
-                    body: JSON.stringify(arg)
                 })
                     .then(response => response.json())
                     .then(data => {
-
-                        return data
+                        return fetch(`${API_URL}/api/grades/create`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "Accept": "application/json",
+                            },
+                            body: JSON.stringify(arg)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+        
+                                return data
+                            })
                     })
             })
     },
