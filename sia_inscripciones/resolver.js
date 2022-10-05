@@ -1,6 +1,25 @@
 import fetch from "node-fetch";
 import { API_URL } from "./index.js";
-import { RpcClient } from "./rpc_client.js";
+import { callRpc } from "./rpc_client.js";
+import routes from "../routes.js";
+
+const API_URL_BUSCADOR_CURSOS = routes.buscadorMaterias.url;
+
+async function simpleGraphQLQuery(query, variables = {}) {
+  const response = await fetch(API_URL_BUSCADOR_CURSOS, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: query,
+      variables: variables,
+    }),
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      return data;
+    });
+  return response;
+}
 
 /**
  * Provide a resolver function for each API endpoint (query)
@@ -10,11 +29,45 @@ import { RpcClient } from "./rpc_client.js";
  */
 
 export const root = {
-  ingresarCurso: (args) => {
-    let response = "";
+  // Use http://127.0.0.1:4000/inscripcion/[id_curso]
+  inscripcionByIdCurso: (args) => {
+    let id = args.id_curso;
+    console.log("id: ", id);
+    return fetch(`${API_URL}/inscripcion/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log("res: ", res);
+        return res;
+      });
+  },
+  ingresarCurso: async (args) => {
     // Use http://127.0.0.1:4000/curso
+
+    //query de asignatura
+    let query = `{
+      asignatura(codigo_asignatura: ${args.codigo_asignatura}) {
+        codigo_asignatura
+      }
+    }
+    `;
+    //verificar que la asignatura exista
+    let asignatura = await simpleGraphQLQuery(query);
+    console.log("asignatura: ", asignatura.data.asignatura);
+    if (asignatura.data.asignatura == null) {
+      return {
+        message: "La asignatura no existe",
+      };
+    }
     return fetch(`${API_URL}/curso`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
 
       body: JSON.stringify(args),
     })
@@ -24,14 +77,10 @@ export const root = {
         return { message: data };
       });
   },
-  inscribirEstudiante: (args) => {
+  inscribirEstudiante: async (args) => {
     // Use RpcClient to send a message to the queue and get the response
-    let client = new RpcClient();
-    client.call(args);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ message: client.getResponse() });
-      }, 300);
+    return callRpc(args).then((res) => {
+      return { message: res };
     });
   },
   ingresarProfesor: (args) => {
@@ -51,6 +100,12 @@ export const root = {
 };
 
 /*
+Para filtrar curso por id_curso, se debe usar la siguiente consulta:
+query cursoInscritoById {inscripcionByIdCurso(id_curso: "002")
+	{
+    documento_estudiante
+  }
+}
 Para ingresar un curso se debe enviar un JSON con la siguiente estructura:
 mutation ingresarCurso {
   ingresarCurso(id_curso: "023", codigo_asignatura: 1, grupo: 22, horarios: {

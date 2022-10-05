@@ -1,77 +1,43 @@
 #!/usr/bin/env node
 
-import { connect } from "amqplib/callback_api.js";
-import { json } from "express";
+import { connect } from "amqplib";
 
-export class RpcClient {
-  constructor() {
-    this.response = {
-      message: "",
-    };
-  }
-
-  async call(message) {
-    callRpc(message, this.response);
-  }
-
-  getResponse() {
-    let json = JSON.parse(this.response.message);
-    return JSON.parse(json.message);
-  }
-}
-
-async function callRpc(message, response) {
-  connect("amqp://localhost", function (error0, connection) {
-    if (error0) {
-      throw error0;
-    }
-    connection.createChannel(function (error1, channel) {
-      if (error1) {
-        console.log("error1");
-        throw error1;
-      }
-      channel.assertQueue(
-        "",
-        {
-          exclusive: true,
-        },
-        function (error2, q) {
-          if (error2) {
-            console.log("error2", error2);
-            throw error2;
-          }
-          let correlationId = generateUuid();
+export async function callRpc(message) {
+  const queue = "rpc_queue";
+  return new Promise((resolve, reject) => {
+    connect("amqp://localhost").then((conn) => {
+      conn.createChannel().then((ch) => {
+        ch.assertQueue("", { exclusive: true }).then((q) => {
+          const correlationId = generateUuid();
           let body = JSON.stringify(message);
 
           console.log(" [x] Requesting inscripción");
 
-          channel.consume(
+          ch.consume(
             q.queue,
             (msg) => {
-              if (msg.properties.correlationId == correlationId) {
+              if (msg.properties.correlationId === correlationId) {
                 console.log(" [.] Got %s", msg.content.toString());
-                defineResponse(msg.content.toString(), response);
-                connection.close();
+                setTimeout(() => {
+                  conn.close();
+                  let message = JSON.parse(msg.content);
+                  resolve(JSON.parse(message.message));
+                }, 500);
               }
             },
-            {
-              noAck: true,
-            }
+            { noAck: true }
           );
 
-          channel.sendToQueue("rpc_queue", Buffer.from(body), {
+          ch.sendToQueue(queue, Buffer.from(body), {
             correlationId: correlationId,
             replyTo: q.queue,
           });
-        }
-      );
+        });
+      });
     });
   });
 }
 
-function defineResponse(message, response) {
-  response.message = message;
-}
 function generateUuid() {
   return (
     Math.random().toString() +

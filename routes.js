@@ -13,8 +13,8 @@ const routes = {
   },
   calificaciones: {
     url: "http://127.0.0.1:8001",
-    route: "/calificaciones"
-  }
+    route: "/calificaciones",
+  },
 };
 
 export default routes;
