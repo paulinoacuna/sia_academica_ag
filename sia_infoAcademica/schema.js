@@ -7,7 +7,7 @@ import { buildSchema } from "graphql"
  */
 const schema = buildSchema(`
     type Query {
-        user(username: String): HistoriaAcademica
+        user(grade: Int, asignature: Int, history: Int): HistoriaAcademica
     }
 
     type HistoriaAcademica {
