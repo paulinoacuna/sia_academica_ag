@@ -25,6 +25,14 @@ export const INFO_ACADEMICA = {
     _pa
     _semestreActual
     _pappi
+    _asignaturas {
+      _codigo
+      _nombre
+      _creditos
+      _tipo
+      _periodo
+      _esAprobada
+    }
   }
 }
  */

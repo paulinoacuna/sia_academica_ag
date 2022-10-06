@@ -5,7 +5,7 @@ import { connect } from "amqplib";
 export async function callRpc(message) {
   const queue = "rpc_queue";
   return new Promise((resolve, reject) => {
-    connect("amqp://localhost").then((conn) => {
+    connect("amqp://host.docker.internal").then((conn) => {
       conn.createChannel().then((ch) => {
         ch.assertQueue("", { exclusive: true }).then((q) => {
           const correlationId = generateUuid();
