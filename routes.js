@@ -9,7 +9,7 @@ const routes = {
     route: "/info_academica",
   },
   buscadorMaterias: {
-    url: "http://127.0.0.1:4000", //"http://host.docker.internal:4100",
+    url:  "http://host.docker.internal:4100", //"http://127.0.0.1:4000",
     route: "/buscador_cursos",
   },
   inscripciones: {
