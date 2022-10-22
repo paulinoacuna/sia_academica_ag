@@ -7,11 +7,6 @@ import { buildSchema } from "graphql"
 
 const schema = buildSchema(`
     type Query {
-<<<<<<< Updated upstream
-        listGrades(id: Int, asignature: Int): [Grade]
-        listAsignatures(id: Int, termn: Int): [Asignature]
-        listHistory(input: Int, program: Int): [History]
-=======
         listAll(id: Int): All
         listByStudent(id: String, term: String): [StudentsGrade]
         listGrades(id: Int, course: Int): [Grade]
@@ -31,7 +26,6 @@ const schema = buildSchema(`
         history: [History]
         courses: [Course]
         grades: [Grade]
->>>>>>> Stashed changes
     }
 
     type Grade {
@@ -39,12 +33,7 @@ const schema = buildSchema(`
         id_course: Int
         name: String
         percentage: Float
-<<<<<<< Updated upstream
-        id_students: String
-        values: String
-=======
         grades: String
->>>>>>> Stashed changes
     }
 
     type Course{
@@ -79,16 +68,6 @@ const schema = buildSchema(`
             id_course: Int
             name: String
             percentage: Float
-<<<<<<< Updated upstream
-            id_students: Array
-            values: Array): Grade
-        updateGrades(input: GradeInput): Message
-        deleteGrades(input: GradeInput): Message
-    }
-
-    input Array {
-        name: [Int]
-=======
             grades: String
             ): Grade
             
@@ -118,7 +97,6 @@ const schema = buildSchema(`
             percentage_adv: Float
             asignature_taken: [Int]
             ): History
->>>>>>> Stashed changes
     }
 
     type Message {

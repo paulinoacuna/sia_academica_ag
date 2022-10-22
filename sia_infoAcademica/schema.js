@@ -5,12 +5,9 @@ import { buildSchema } from "graphql"
  * The GraphQL schema in string form
  * @type {GraphQLSchema} schema
  */
-
-// pacuna
-
 const schema = buildSchema(`
     type Query {
-        user(username: String): HistoriaAcademica
+        user(grade: Int, asignature: Int, history: Int): HistoriaAcademica
     }
 
     type HistoriaAcademica {
