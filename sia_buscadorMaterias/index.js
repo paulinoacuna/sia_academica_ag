@@ -11,6 +11,8 @@ export const BUSCADOR_CURSOS = {
     graphiql: true,
 }
 
+console.log("BUSCADOR_CURSOS", "BUSCADOR_CURSOS")
+
 
 /*
 {
