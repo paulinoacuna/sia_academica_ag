@@ -97,13 +97,68 @@ export const root = {
         return { message: data };
       });
   },
+
+  obtenerProfesor: async (args) => {
+    // Use http://http://127.0.0.1:4000/profesor/[documento_identidad]
+    let id = args.documento_identidad;
+    console.log("id: ", id);
+    return fetch(`${API_URL}/profesor/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        return data;
+      });
+  },
+  cursosByCodigoAsignatura: async (args) => {
+    // Use http://127.0.0.1:4000/cursos/[codigo_asignatura]
+    let id = args.codigo_asignatura;
+    return fetch(`${API_URL}/cursos/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data: ", data);
+        data.forEach((curso) => {
+          curso.horarios = JSON.parse(curso.horarios);
+        });
+        console.log("data: ", data);
+        return data;
+      });
+  },
+  horarioByDocumentoEstudiante: async (args) => {
+    // Use http://127.0.0.1:4000/horario/[documento_estudiante]
+    let id = args.documento_estudiante;
+    return fetch(`${API_URL}/horario/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data: ", data);
+        data.forEach((curso) => {
+          curso.horarios = JSON.parse(curso.horarios);
+        });
+        console.log("data: ", data);
+        return data;
+      });
+  },
 };
 
 /*
-Para filtrar curso por id_curso, se debe usar la siguiente consulta:
-query cursoInscritoById {inscripcionByIdCurso(id_curso: "002")
+Para filtrar curso por documento_estudiante, se debe usar la siguiente consulta:
+query cursoInscritoById {inscripcionByIdCurso(documento_estudiante: "1001347151")
 	{
-    documento_estudiante
+    id_curso
   }
 }
 Para ingresar un curso se debe enviar un JSON con la siguiente estructura:
