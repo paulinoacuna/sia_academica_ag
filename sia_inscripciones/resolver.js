@@ -152,6 +152,36 @@ export const root = {
         return data;
       });
   },
+  cursoByProfesor: async (args) => {
+    // Use http://4000/cursos to get all the courses
+    return fetch(`${API_URL}/cursos`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("data: ", data);
+        data.forEach((curso) => {
+          curso.horarios = JSON.parse(curso.horarios);
+        });
+        console.log("data: ", data);
+        //recorre los horarios de cada curso y verifica si el profesor esta en el horario
+        let cursosProfesor = [];
+        data.forEach((curso) => {
+          curso.horarios.forEach((horario) => {
+            if (
+              horario.documento_profesor == args.documento_identidad &&
+              !cursosProfesor.includes(curso)
+            ) {
+              cursosProfesor.push(curso);
+            }
+          });
+        });
+        return cursosProfesor;
+      });
+  },
 };
 
 /*
