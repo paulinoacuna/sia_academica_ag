@@ -1,90 +1,95 @@
 import { buildSchema } from "graphql"
 
-
 /**
  * The GraphQL schema in string form
  * @type {GraphQLSchema} schema
  */
+
 const schema = buildSchema(`
     type Query {
-        listGrades(id: Int, asignature: Int): [Grade]
-        listAsignatures(id: Int, termn: String): [Asignature]
+        listAll: All
+        listGrades(id: Int, course: Int): [Grade]
+        listCourse(id: Int, termn: String): [Course]
         listHistory(id: Int, program: Int): [History]
+        getCourseName(id_course: Int): Message
+    }
+
+    type StudentsGrade {
+        id_student: String
+        id_course: Int
+        grades: String
+    }
+
+    type All {
+        history: [History]
+        courses: [Course]
+        grades: [Grade]
     }
 
     type Grade {
         id: Int
-        id_asignature: Int
+        id_course: Int
         name: String
         percentage: Float
-        id_students: String
-        values: Float
+        grades: String
     }
 
-    type Asignature {
+    type Course{
         id: Int
+        id_asignature: Int
         term: String
         consolidated: Boolean
     }
 
     type History {
         id: Int
-        id_student: String
+        id_student: Int
         id_program: Int
         percentage_adv: Float
-        asignature_taken: String
-    }
-
-    input GradeInput {
-        id: Int
-        id_asignature: Int
-        name: String
-        percentage: Float
-        id_students: String
-        values: String
+        asignature_taken: [Int]
     }
     
     type Mutation {
         createGrades(
             id: Int
-            id_asignature: Int
+            id_course: Int
             name: String
             percentage: Float
-            id_students: String
-            values: Float
+            grades: String
             ): Grade
             
         updateGrades(
             id: Int
-            id_asignature: Int
+            id_course: Int
             name: String
             percentage: Float
-            id_students: String
-            values: Float
+            grades: String
             ): Grade
             
         deleteGrades(
             input: Int
             ): Message
 
-        updateAsignatures(
+        updateCourse(
             id: Int
+            id_asignature: Int
             term: String
             consolidated: Boolean
-            ): Asignature
+            ): Course
             
         updateHistory(
             id: Int
             id_student: String
             id_program: Int
             percentage_adv: Float
-            asignature_taken: String
+            asignature_taken: [Int]
             ): History
     }
 
     type Message {
         message: String
     }
-`)
+    `
+)
 
 export default schema
