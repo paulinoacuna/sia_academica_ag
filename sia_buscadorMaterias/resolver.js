@@ -214,6 +214,20 @@ async function getCursos(codigo_asignatura) {
     });
 }
 
+async function getProfesor(documento_identidad) {
+  return fetch(`${API_URL.inscripciones}/profesor/${documento_identidad}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+}
+
 const resolverOperations = {
   getAsignaturas,
   getTipologias,
@@ -228,6 +242,7 @@ const resolverOperations = {
   getAsignatura,
   getAsignaturasInscribibles,
   getCursos,
+  getProfesor
 };
 
 export default resolverOperations;
