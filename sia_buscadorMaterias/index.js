@@ -1,18 +1,16 @@
-import routes from "../routes.js"
-import schema from "./newSchema.js"
-
+import routes from "../routes.js";
+import schema from "./newSchema.js";
 
 // Expose the API URL
-export const API_URL = routes.buscadorMaterias.url
+export const API_URL = { buscadorMaterias: routes.buscadorMaterias.url, inscripciones: routes.inscripciones.url};
 
 // Expose the schema and the resolver
 export const BUSCADOR_CURSOS = {
-    schema: schema,
-    graphiql: true,
-}
+  schema: schema,
+  graphiql: true,
+};
 
-console.log("BUSCADOR_CURSOS", "BUSCADOR_CURSOS")
-
+console.log("BUSCADOR_CURSOS", "BUSCADOR_CURSOS");
 
 /*
 {
