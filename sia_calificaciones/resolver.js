@@ -2,7 +2,6 @@ import { query, response } from "express"
 import fetch from "node-fetch"
 import { API_URL } from "./index.js"
 
-
 /**
  * Provide a resolver function for each API endpoint (query)
  * @type {{updateUser: (function(*): Promise<unknown>), user: (function(*): Promise<DataTransferItem>)}}
@@ -90,9 +89,7 @@ export const root = {
     },
 
     createGrades: (arg) => {
-        let gradesdata = arg.grades;
-        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
-        arg.grades = dict;
+
         return fetch(`${API_URL}/api/grades/create`, {
             method: 'POST',
             headers: {
@@ -100,18 +97,16 @@ export const root = {
                 "Accept": "application/json",
             },
             body: JSON.stringify(arg)
+           
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 return data
             })
     },
 
     updateGrades: async (arg) => {
-        let gradesdata = arg.grades;
-        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
-        arg.grades = dict;
+        
         return fetch(`${API_URL}/api/grades/update/${arg.id}`, {
             method: 'PUT',
             headers: {
@@ -214,5 +209,71 @@ export const root = {
                 return data
             })
     },
+
+    formatStudents: (arg) => {
+
+        if (arg.student != null) {
+            return fetch(`${API_URL}/api/grades/`)
+                .then(response => response.json())
+                .then(data => {
+                    
+                    let newdata = []
+                    let course = {}
+                    let count = 0
+                    data.map((element) => {
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                        if (dict[arg.student] != null) {
+                           
+                            if (!Object.keys(course).includes(element.id_course)) {
+                                course[element.id_course] = count
+                                newdata.push({id: count, id_student: arg.student, id_course: element.id_course, grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                                
+                            }
+                            else {
+                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                            }
+                            count ++
+                        }
+                    })
+
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
+        }
+        else {
+            let courses = `?id_course=${arg.course}`
+            return fetch(`${API_URL}/api/grades/${courses}`)
+                .then(response => response.json())
+                .then(data => {
+                    let newdata = []
+                    let users = {}
+                    data.map((element) => {
+                        let count = 0
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                        Object.keys(dict).map((grade) => {
+                            if (!Object.keys(users).includes(grade)) {
+                                users[grade] = count
+                                newdata.push({id: count, id_student: grade, id_course: element.id_course, grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[grade]]
+                                count ++
+                            }
+                            else {
+                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[grade]]
+                            }
+                            
+                        })
+                    })
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
+        }
+    }
 
 }

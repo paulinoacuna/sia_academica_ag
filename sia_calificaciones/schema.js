@@ -12,9 +12,11 @@ const schema = buildSchema(`
         listCourse(id: Int, termn: String): [Course]
         listHistory(id: Int, program: Int): [History]
         getCourseName(id_course: Int): Message
+        formatStudents(course: Int, student: String): [StudentsGrade]
     }
 
     type StudentsGrade {
+        id: Int
         id_student: String
         id_course: Int
         grades: String
