@@ -38,7 +38,7 @@ export const root = {
             const jsonHistory = response.data.listHistory
 
             return refFetch(queryAsignatures(arg), API_URL_CALIFICACIONES).then((response) => {
-                const jsonAsignatures = response.data.listAsignatures
+                const jsonAsignatures = response.data.listCourse
 
                 return refFetch(queryGrades(arg), API_URL_CALIFICACIONES).then((response) => {
                     const jsonGrades = response.data.listGrades
