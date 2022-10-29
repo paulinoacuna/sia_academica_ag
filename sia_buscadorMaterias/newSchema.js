@@ -4,7 +4,7 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLList,
-  GraphQLBoolean
+  GraphQLBoolean,
 } from "graphql";
 
 import resolver from "./resolver.js";
@@ -33,7 +33,48 @@ const Asignatura = new GraphQLObjectType({
       resolve: (parent) => {
         return resolver.getPrerequisitos(parent.codigo_asignatura);
       },
+    },
+    cursos: {
+      type: new GraphQLList(Curso),
+      resolve: (parent) => {
+        return resolver.getCursos(parent.codigo_asignatura)
+      }
     }
+
+  }),
+});
+
+
+
+const Horario = new GraphQLObjectType({
+  name: "Horario",
+  fields: () => ({
+    dia: { type: GraphQLInt }, 
+    hora_inicio: { type: GraphQLInt },
+    hora_fin: { type: GraphQLInt },
+    salon: { type: GraphQLString },
+    documento_profesor: { type: GraphQLString },
+    profesor: { type: Profesor, resolve: (parent) => resolver.getProfesor(parent.documento_profesor) },
+    tipo: { type: GraphQLString },
+  }),
+});
+
+const Curso = new GraphQLObjectType({
+  name: "Curso",
+  fields: () => ({
+    id_curso: { type: GraphQLString },
+    codigo_asignatura: { type: GraphQLInt },
+    grupo: { type: GraphQLInt },
+    horarios: { type: new GraphQLList(Horario) },
+  }),
+});
+
+const Profesor = new GraphQLObjectType({
+  name: "Profesor",
+  fields: () => ({
+    documento_identidad: { type: GraphQLString },
+    nombre_completo: { type: GraphQLString },
+    email_institucional: { type: GraphQLString },
   }),
 });
 
@@ -41,12 +82,9 @@ const Prerequisito = new GraphQLObjectType({
   name: "Prerequisitos",
   fields: () => ({
     codigo_asignatura_prerequisito: { type: GraphQLInt },
-    es_correquisito: {type: GraphQLBoolean}
-  })
-})
-
-
-
+    es_correquisito: { type: GraphQLBoolean },
+  }),
+});
 
 const Tipologia = new GraphQLObjectType({
   name: "Tipologia",
@@ -140,7 +178,8 @@ const Query = new GraphQLObjectType({
     asignaturasInscribibles: {
       type: new GraphQLList(Asignatura),
       args: { codigosAsignaturas: { type: GraphQLList(GraphQLInt) } },
-      resolve: (parent, args) => resolver.getAsignaturasInscribibles(args.codigosAsignaturas),
+      resolve: (parent, args) =>
+        resolver.getAsignaturasInscribibles(args.codigosAsignaturas),
     },
   }),
 });

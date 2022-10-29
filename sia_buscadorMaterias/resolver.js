@@ -1,8 +1,12 @@
 import fetch from "node-fetch";
 import { API_URL } from "./index.js";
 
-async function simpleGraphQLQuery(query, variables = {}) {
-  const response = await fetch(API_URL, {
+async function simpleGraphQLQuery(
+  query,
+  variables = {},
+  URL = API_URL.buscadorMaterias
+) {
+  const response = await fetch(URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -49,32 +53,34 @@ const getAsignaturasInscribibles = async (codigos_asignatura_aprobadas) => {
   //querie to het the  asignaturas_habilitadas
   const query = `query Asignatura($codigoAsignatura: Int!) {
     asignaturas_habilitadas(codigo_asignatura: $codigoAsignatura)
-  }`
+  }`;
 
-  //iterate over the array of codes of the courses that have been approved 
+  //iterate over the array of codes of the courses that have been approved
   //and get the list of courses that are habilitadas to be taken
   let asignaturas_inscribibles = [];
   for (let i = 0; i < codigos_asignatura_aprobadas.length; i++) {
-    const data = await simpleGraphQLQuery(query, { codigoAsignatura: codigos_asignatura_aprobadas[i] });
-    asignaturas_inscribibles = asignaturas_inscribibles.concat(data.asignaturas_habilitadas);
+    const data = await simpleGraphQLQuery(query, {
+      codigoAsignatura: codigos_asignatura_aprobadas[i],
+    });
+    asignaturas_inscribibles = asignaturas_inscribibles.concat(
+      data.asignaturas_habilitadas
+    );
   }
   //make the array unique
   asignaturas_inscribibles = [...new Set(asignaturas_inscribibles)];
   //create the simmetric difference between the array of habilitadas and the array of approved courses
-  asignaturas_inscribibles = asignaturas_inscribibles.filter(x => !codigos_asignatura_aprobadas.includes(x));
+  asignaturas_inscribibles = asignaturas_inscribibles.filter(
+    (x) => !codigos_asignatura_aprobadas.includes(x)
+  );
 
-  console.log(asignaturas_inscribibles);
-  
   //get the data of the courses
   let asignaturas_inscribibles_data = [];
   for (let i = 0; i < asignaturas_inscribibles.length; i++) {
     const data = await getAsignatura(asignaturas_inscribibles[i]);
-    console.log(data);
     asignaturas_inscribibles_data.push(data);
   }
   return asignaturas_inscribibles_data;
-
-}
+};
 
 const getTipologias = async () => {
   const query = `query Tipologias {
@@ -181,15 +187,46 @@ const getPrerequisitos = async (codigo_asignatura) => {
     codigoAsignatura: codigo_asignatura,
   });
   const prerequisito = data.prerequisito;
-  console.log("prerequisito", prerequisito);
   //if prerequisito is null, return empty array
   if (!prerequisito) {
     return [];
   }
   //if prerequisito is not null, return array with prerequisito
   return prerequisito;
-
 };
+
+async function getCursos(codigo_asignatura) {
+  // Use http://127.0.0.1:4000/cursos/[codigo_asignatura]
+  const url = `${API_URL.inscripciones}/cursos/${codigo_asignatura}`;
+  console.log(url);
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((curso) => {
+        curso.horarios = JSON.parse(curso.horarios);
+      });
+      return data;
+    });
+}
+
+async function getProfesor(documento_identidad) {
+  return fetch(`${API_URL.inscripciones}/profesor/${documento_identidad}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data;
+    });
+}
 
 const resolverOperations = {
   getAsignaturas,
@@ -204,7 +241,8 @@ const resolverOperations = {
   getSede,
   getAsignatura,
   getAsignaturasInscribibles,
-  
+  getCursos,
+  getProfesor
 };
 
 export default resolverOperations;
