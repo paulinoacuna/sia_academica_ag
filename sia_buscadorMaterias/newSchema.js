@@ -37,24 +37,24 @@ const Asignatura = new GraphQLObjectType({
     cursos: {
       type: new GraphQLList(Curso),
       resolve: (parent) => {
-        return resolver.getCursos(parent.codigo_asignatura)
-      }
-    }
-
+        return resolver.getCursos(parent.codigo_asignatura);
+      },
+    },
   }),
 });
-
-
 
 const Horario = new GraphQLObjectType({
   name: "Horario",
   fields: () => ({
-    dia: { type: GraphQLInt }, 
+    dia: { type: GraphQLInt },
     hora_inicio: { type: GraphQLInt },
     hora_fin: { type: GraphQLInt },
     salon: { type: GraphQLString },
     documento_profesor: { type: GraphQLString },
-    profesor: { type: Profesor, resolve: (parent) => resolver.getProfesor(parent.documento_profesor) },
+    profesor: {
+      type: Profesor,
+      resolve: (parent) => resolver.getProfesor(parent.documento_profesor),
+    },
     tipo: { type: GraphQLString },
   }),
 });
@@ -66,6 +66,8 @@ const Curso = new GraphQLObjectType({
     codigo_asignatura: { type: GraphQLInt },
     grupo: { type: GraphQLInt },
     horarios: { type: new GraphQLList(Horario) },
+    cupos_disponibles: { type: GraphQLInt },
+    cupos_totales: { type: GraphQLInt },
   }),
 });
 
