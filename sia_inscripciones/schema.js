@@ -8,6 +8,10 @@ import { buildSchema } from "graphql";
 const schema = buildSchema(`
     type Query {
         inscripcionByIdCurso(id_curso: String): [CursoInscritoFilter]
+        obtenerProfesor(documento_identidad: String): ProfesorOutput
+        cursosByCodigoAsignatura(codigo_asignatura: Int): [Curso]
+        horarioByDocumentoEstudiante(documento_estudiante: String): [Curso]
+        cursoByProfesor(documento_identidad: String): [Curso]
     }
     type Horario {
         dia: Int
@@ -29,6 +33,14 @@ const schema = buildSchema(`
         id_curso: String!
         documento_estudiante: String!
     }
+    type Curso{
+        id_curso: String!
+        codigo_asignatura: Int!
+        grupo: Int!
+        horarios: [Horario]
+        cupos_disponibles: Int!
+        cupos_totales: Int!
+    }
     type CursoInscritoFilter {
         id_curso: String
         documento_estudiante: String
@@ -37,6 +49,11 @@ const schema = buildSchema(`
         documento_identidad: String!
         nombre_completo: String!
         email_institucional: String!
+    }
+        type ProfesorOutput {
+        documento_identidad: String
+        nombre_completo: String
+        email_institucional: String
     }
 
     type Message {

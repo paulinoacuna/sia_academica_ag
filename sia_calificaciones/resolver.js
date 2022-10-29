@@ -1,17 +1,35 @@
+import { query, response } from "express"
 import fetch from "node-fetch"
-import { API_URL, API_URL_BUSCADOR_CURSOS, API_URL_INSCRIPCIONES } from "./index.js"
-
+import { API_URL } from "./index.js"
 
 /**
  * Provide a resolver function for each API endpoint (query)
- * @type {{updateGrades: (function(*): Promise<unknown>), deleteGrades: (function(*): Promise<Response>), listAsignatures: ((function(*): (Promise<unknown>))|*), createGrades: (function(*): Promise<unknown>), listGrades: ((function(*): (Promise<unknown>))|*), updateAsignatures: (function(*): Promise<unknown>), updateHistory: (function(*): Promise<unknown>), listHistory: ((function(*): (Promise<unknown>))|*)}}
+ * @type {{updateUser: (function(*): Promise<unknown>), user: (function(*): Promise<DataTransferItem>)}}
  * @param {Object} args - The arguments passed in the query
  * @returns {Promise<unknown>} - The response from the API
  * 
  **/
+
 export const root = {
+    listAll: () => {
+        return fetch(`${API_URL}/api/all/`)
+            .then(response => response.json())
+            .then(data => {
+                let jsonHistory = data["Histories"];
+                let jsonCourses = data["Courses"];
+                let jsonGrades = data["Grades"];
+
+                const jsonFull = {
+                    history: jsonHistory,
+                    courses: jsonCourses,
+                    grades: jsonGrades
+                }
+                return jsonFull
+            })
+    },
+
     listGrades: (arg) => {
-        if (arg.id == null && arg.asignature === null) {
+        if (arg.id == null && arg.course == null) {
             return fetch(`${API_URL}/api/grades/`)
                 .then(response => response.json())
                 .then(data => {
@@ -19,18 +37,23 @@ export const root = {
                 })
         }
         else {
-            let asignatura = arg.id !== null ? `?id=${arg.id}` : `?id_asignature=${arg.asignature}`
-            return fetch(`${API_URL}/api/grades/${asignatura}`)
+            let courses = arg.id !== null ? `?id=${arg.id}` : `?id_course=${arg.course}`
+            return fetch(`${API_URL}/api/grades/${courses}`)
                 .then(response => response.json())
                 .then(data => {
+                    
                     return data
                 })
         }
     },
+    
 
-    listAsignatures: (arg) => {
-        if (arg.id == null && arg.termn === null) {
-            return fetch(`${API_URL}/api/asignatures/`)
+    listCourse: (arg) => {
+        if (arg.termn == 'null'){
+            arg.termn = null
+        }
+        if (arg.id == null && arg.termn == null) {
+            return fetch(`${API_URL}/api/courses/`)
                 .then(response => response.json())
                 .then(data => {
                     
@@ -39,8 +62,7 @@ export const root = {
         }
         else {
             let termn = arg.id !== null ? `?id=${arg.id}` : `?term=${arg.termn}`
-
-            return fetch(`${API_URL}/api/asignatures/${termn}`)
+            return fetch(`${API_URL}/api/courses/${termn}`)
                 .then(response => response.json())
                 .then(data => {
                     return data
@@ -49,7 +71,7 @@ export const root = {
     },
 
     listHistory: (arg) => {
-        if (arg.id == null && arg.termn === null) {
+        if (arg.id == null && arg.program == null) {
             return fetch(`${API_URL}/api/history/`)
                 .then(response => response.json())
                 .then(data => {
@@ -59,15 +81,16 @@ export const root = {
         else {
             let program = arg.id !== null ? `?id=${arg.id}` : `?id_program=${arg.program}`
 
-            return fetch(`${API_URL}/api/history/${program}`)
-                .then(response => response.json())
-                .then(data => {
-                    return data
-                })
+        return fetch(`${API_URL}/api/history/${program}`)
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
         }
     },
 
     createGrades: (arg) => {
+
         return fetch(`${API_URL}/api/grades/create`, {
             method: 'POST',
             headers: {
@@ -75,6 +98,7 @@ export const root = {
                 "Accept": "application/json",
             },
             body: JSON.stringify(arg)
+           
         })
             .then(response => response.json())
             .then(data => {
@@ -83,6 +107,7 @@ export const root = {
     },
 
     updateGrades: async (arg) => {
+        
         return fetch(`${API_URL}/api/grades/update/${arg.id}`, {
             method: 'PUT',
             headers: {
@@ -95,10 +120,11 @@ export const root = {
             .then(data => {
                 return data
             })
+        
     },
 
     deleteGrades: (arg) => {
-        return fetch(`${API_URL}/api/grades/${arg.input}/delete`, {
+        return fetch(`${API_URL}/api/grades/delete/${arg.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -109,8 +135,8 @@ export const root = {
             })
     },
 
-    updateAsignatures: async (arg) => {
-        return fetch(`${API_URL}/api/asignatures/update/${arg.id}`, {
+    updateCourse: async (arg) => {
+        return fetch(`${API_URL}/api/courses/update/${arg.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -125,6 +151,7 @@ export const root = {
     },
 
     updateHistory: async (arg) => {
+        arg.asignature_taken = arg.asignature_taken
         return fetch(`${API_URL}/api/history/update/${arg.id}`, {
             method: 'PUT',
             headers: {
@@ -138,5 +165,118 @@ export const root = {
                 return data
             })
     },
- 
+
+    getCourseName: (arg) => {
+        let query = `
+        {
+            asignatura(codigo_asignatura: ${arg.id_asignature}) {
+                codigo_asignatura
+            }
+        }`
+
+        return fetch(`${API_URL_BUSCADOR_CURSOS}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                "Accept": "application/json",
+            },
+            body: JSON.stringify({
+                query,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
+    },
+
+    getStudents: (arg) => {
+        let query = `inscripcionByIdCurso(id_curso: ${arg.id_course}){
+            documento_estudiante
+        }`
+
+        return fetch(`${API_URL_INSCRIPCIONES}/inscripcion/${arg.id_course}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                return data
+            })
+    },
+
+    formatStudents: (arg) => {
+
+        if (arg.student == 'null'){
+            arg.student = null
+        }
+        if (arg.student !== null) {
+            return fetch(`${API_URL}/api/grades/`)
+                .then(response => response.json())
+                .then(data => {
+                    
+                    let newdata = []
+                    let course = {}
+                    let count = 0
+                    data.map((element) => {
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                        if (dict[arg.student] != null) {
+                           
+                            if (!Object.keys(course).includes(element.id_course)) {
+                                course[element.id_course] = count
+                                newdata.push({id: count, id_student: arg.student, id_course: element.id_course, grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                                
+                            }
+                            else {
+                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                            }
+                            count ++
+                        }
+                    })
+
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
+        }
+        else {
+            let courses = `?id_course=${arg.course}`
+            return fetch(`${API_URL}/api/grades/${courses}`)
+                .then(response => response.json())
+                .then(data => {
+                    let newdata = []
+                    let users = {}
+                    data.map((element) => {
+                        let count = 0
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                        Object.keys(dict).map((grade) => {
+                            if (!Object.keys(users).includes(grade)) {
+                                users[grade] = count
+                                newdata.push({id: count, id_student: grade, id_course: element.id_course, grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[grade]]
+                                count ++
+                            }
+                            else {
+                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[grade]]
+                            }
+                            
+                        })
+                    })
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
+        }
+    }
+
 }

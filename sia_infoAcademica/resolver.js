@@ -47,10 +47,9 @@ export const root = {
                         asignatures: jsonAsignatures,
                         grades: jsonGrades
                     }
-                    console.log(jsonFull)
 
-                    return refFetch(jsonFull, `${API_URL}/api/historiaAcademica/${arg.username}`).then((response) => {
-                        return data
+                    return refFetch(jsonFull, `${API_URL}/api/historiaAcademica`).then((response) => {
+                        return response
                     })
                 })
             })

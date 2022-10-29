@@ -137,6 +137,11 @@ const Query = new GraphQLObjectType({
       args: { id_sede: { type: GraphQLInt } },
       resolve: (parent, args) => resolver.getSede(args.id_sede),
     },
+    asignaturasInscribibles: {
+      type: new GraphQLList(Asignatura),
+      args: { codigosAsignaturas: { type: GraphQLList(GraphQLInt) } },
+      resolve: (parent, args) => resolver.getAsignaturasInscribibles(args.codigosAsignaturas),
+    },
   }),
 });
 
