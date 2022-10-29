@@ -9,11 +9,11 @@ const routes = {
     route: "/info_academica",
   },
   buscadorMaterias: {
-    url: "http://http://host.docker.internal:4100/", //"http://host.docker.internal:4100",
+    url: "http://host.docker.internal:4100/", //"http://host.docker.internal:4100",
     route: "/buscador_cursos",
   },
   inscripciones: {
-    url: "http://http://host.docker.internal:4000", //"http://host.docker.internal:4000",
+    url: "http://host.docker.internal:4000", //"http://host.docker.internal:4000",
     route: "/inscripciones",
   },
   calificaciones: {
