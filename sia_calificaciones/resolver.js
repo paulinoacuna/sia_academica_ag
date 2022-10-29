@@ -49,7 +49,10 @@ export const root = {
     
 
     listCourse: (arg) => {
-        if (arg.id == null && arg.termn === null) {
+        if (arg.termn == 'null'){
+            arg.termn = null
+        }
+        if (arg.id == null && arg.termn == null) {
             return fetch(`${API_URL}/api/courses/`)
                 .then(response => response.json())
                 .then(data => {
@@ -59,7 +62,6 @@ export const root = {
         }
         else {
             let termn = arg.id !== null ? `?id=${arg.id}` : `?term=${arg.termn}`
-
             return fetch(`${API_URL}/api/courses/${termn}`)
                 .then(response => response.json())
                 .then(data => {
@@ -69,7 +71,7 @@ export const root = {
     },
 
     listHistory: (arg) => {
-        if (arg.id == null && arg.program === null) {
+        if (arg.id == null && arg.program == null) {
             return fetch(`${API_URL}/api/history/`)
                 .then(response => response.json())
                 .then(data => {
@@ -79,10 +81,9 @@ export const root = {
         else {
             let program = arg.id !== null ? `?id=${arg.id}` : `?id_program=${arg.program}`
 
-        return fetch(`${API_URL}/api/history/?id=${program}`)
+        return fetch(`${API_URL}/api/history/${program}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 return data
             })
         }
@@ -117,7 +118,6 @@ export const root = {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 return data
             })
         
@@ -146,12 +146,12 @@ export const root = {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 return data
             })
     },
 
     updateHistory: async (arg) => {
+        arg.asignature_taken = arg.asignature_taken
         return fetch(`${API_URL}/api/history/update/${arg.id}`, {
             method: 'PUT',
             headers: {
@@ -212,7 +212,10 @@ export const root = {
 
     formatStudents: (arg) => {
 
-        if (arg.student != null) {
+        if (arg.student == 'null'){
+            arg.student = null
+        }
+        if (arg.student !== null) {
             return fetch(`${API_URL}/api/grades/`)
                 .then(response => response.json())
                 .then(data => {

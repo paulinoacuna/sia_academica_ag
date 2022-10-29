@@ -45,7 +45,7 @@ const schema = buildSchema(`
 
     type History {
         id: Int
-        id_student: Int
+        id_student: String
         id_program: Int
         percentage_adv: Float
         asignature_taken: [Int]
