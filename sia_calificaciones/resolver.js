@@ -227,15 +227,15 @@ export const root = {
                         let gradesdata = element['grades']
                         var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
                         if (dict[arg.student] != null) {
-                           
-                            if (!Object.keys(course).includes(element.id_course)) {
+
+                            if (!Object.keys(course).includes(element.id_course.toString())) {
+                                
                                 course[element.id_course] = count
                                 newdata.push({id: count, id_student: arg.student, id_course: element.id_course, grades: {}})
                                 newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]]
-                                
                             }
                             else {
-                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                                newdata[course[element.id_course.toString()]]['grades'][element.name] = [element.percentage, dict[arg.student]]
                             }
                             count ++
                         }
