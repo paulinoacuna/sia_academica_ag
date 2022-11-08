@@ -5,7 +5,7 @@ const routes = {
     route: "/",
   },
   infoAcademica: {
-    url: "http://host.docker.internal:3001",
+    url: "http://host.docker.internal:8080",
     route: "/info_academica",
   },
   buscadorMaterias: {
@@ -17,7 +17,7 @@ const routes = {
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://host.docker.internal:8001",
+    url: "http://host.docker.internal:8000",
     route: "/calificaciones",
   },
 };

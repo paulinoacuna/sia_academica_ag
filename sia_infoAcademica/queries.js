@@ -1,6 +1,6 @@
-export const queryHistory = (args) => `
+export const getHistoryData = (args) => `
     {
-        listHistory(id: ${args.history}, program: null) {
+        listHistory(id: ${args.id}, program: null) {
             id
             id_student
             id_program
@@ -10,25 +10,28 @@ export const queryHistory = (args) => `
     }
 `
 
-export const queryAsignatures = (args) => `
+
+export const getCurso = (args) => `
     {
-        listAsignatures(id: ${args.asignature}, termn: null) {
+        listCourse(id: ${args}, termn: null) {
             id
+            id_asignature
             term
             consolidated
         }
     }
 `
 
-export const queryGrades = (args) => `
+
+
+export const getCalificaciones = (args) => `
     {
-        listGrades(id: ${args.grade}, asignature: null) {
+        listGrades(id: null, course: ${args.id}) {
             id
-            id_asignature
+            id_course
             name
             percentage
-            id_students
-            values
+            grades
         }
     }
 `

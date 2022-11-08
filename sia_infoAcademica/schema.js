@@ -6,44 +6,47 @@ import { buildSchema } from "graphql"
  * @type {GraphQLSchema} schema
  */
 const schema = buildSchema(`
-    type Query {
-        user(grade: Int, asignature: Int, history: Int): HistoriaAcademica
-    }
 
-    type HistoriaAcademica {
-        _documento_identidad: String
-        _id_historia: String
-        _id_programa: String
-        _porcentaje_avance: String
-        _papa: String
-        _pa: String
-        _semestreActual: String
-        _pappi: String
-        _asignaturas: [Asignatura]
-    }
+type Query {
+  getHistory(id: Int): [History]
+}
 
-    type Asignatura {
-        _codigo: String
-        _nombre: String
-        _creditos: String
-        _tipo: String
-        _periodo: String
-        _esConsolidada: String
-        _calificaciones: [Calificacion]
-        _definitiva: String
-        _esAprobada: String
-    }
+  type History {
+    _documento_identidad: String
+    _id_historia: Int
+    _id_programa: Int
+    _porcentaje_avance: Float
+    _papa: Float
+    _pa: Float
+    _semestreActual: String
+    _pappi: Int
+    _asignaturasInscritas: [Asignaturas]
+    _asignaturas: [Asignaturas]
+  }
 
-    type Calificacion {
-        _nombre: String
-        _nota: String
-        _porcentaje: String
-    }
+  type Asignaturas {
+    _codigo: Int
+    _nombre: String
+    _creditos: Int
+    _tipo: String
+    _periodo: String
+    _esConsolidada: Boolean
+    _definitiva: Float
+    _esAprobada: Boolean
+    _calificaciones: [Calificaciones]
+  }
+ 
+  type Calificaciones {
+    _nombre: String
+    _porcentaje: Float
+    _nota: Float
+  }
+  
 
-    type Message {
-        message: String
-    }
-    
+  type Message {
+    message: String
+}
+
 `)
 
 
