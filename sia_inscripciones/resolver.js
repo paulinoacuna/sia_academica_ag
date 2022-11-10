@@ -33,6 +33,7 @@ export const root = {
   inscripcionByIdCurso: (args) => {
     let id = args.id_curso;
     console.log("id: ", id);
+    console.log(API_URL);
     return fetch(`${API_URL}/inscripcion/${id}`, {
       method: "GET",
       headers: {
@@ -102,6 +103,7 @@ export const root = {
     // Use http://http://127.0.0.1:4000/profesor/[documento_identidad]
     let id = args.documento_identidad;
     console.log("id: ", id);
+    console.log(API_URL)
     return fetch(`${API_URL}/profesor/${id}`, {
       method: "GET",
       headers: {
@@ -117,6 +119,7 @@ export const root = {
   cursosByCodigoAsignatura: async (args) => {
     // Use http://127.0.0.1:4000/cursos/[codigo_asignatura]
     let id = args.codigo_asignatura;
+
     return fetch(`${API_URL}/cursos/${id}`, {
       method: "GET",
       headers: {
@@ -162,11 +165,11 @@ export const root = {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("data: ", data);
+        //console.log("data: ", data);
         data.forEach((curso) => {
           curso.horarios = JSON.parse(curso.horarios);
         });
-        console.log("data: ", data);
+        //console.log("data: ", data);
         //recorre los horarios de cada curso y verifica si el profesor esta en el horario
         let cursosProfesor = [];
         data.forEach((curso) => {

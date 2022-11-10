@@ -1,6 +1,7 @@
-import { query, response } from "express"
 import fetch from "node-fetch"
-import { API_URL } from "./index.js"
+import routes from "../routes.js"
+import { API_ROUTE, API_URL } from "./index.js"
+
 
 /**
  * Provide a resolver function for each API endpoint (query)
@@ -9,6 +10,9 @@ import { API_URL } from "./index.js"
  * @returns {Promise<unknown>} - The response from the API
  * 
  **/
+
+const API_URL_INSCRIPCIONES = routes.inscripciones.route;
+const API_URL_BUSCADOR_CURSOS = routes.buscadorMaterias.route;
 
 export const root = {
     listAll: () => {
@@ -210,6 +214,67 @@ export const root = {
             })
     },
 
+
+    getDocAsignatures: async (arg) => {
+        let nombre_asignatura = ["ARQUITECTURA DE SOFTWARE", "INGENIERIA DE SOFTWARE I", "INGENIERIA DE SOFTWARE II"]
+        let query = `{
+            cursoByProfesor(documento_identidad: "${arg.documento_identidad}")
+            {
+                id_curso
+                codigo_asignatura
+                horarios {
+                    documento_profesor
+                }
+            }
+        }`
+
+        return fetch(`${API_ROUTE}${API_URL_INSCRIPCIONES}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query,
+            })
+        })
+            .then(response => response.json())
+            .then(datas => {
+                let arr = []
+                let count = 0
+                datas.data.cursoByProfesor.map(async (asig) => {
+                    arr.push({id_curso: asig.id_curso, documento_profesor: arg.documento_identidad, codigo_asignatura: asig.codigo_asignatura, nameCourse: 'h'})
+                    
+                    arr[count]['nameCourse'] = nombre_asignatura[count]
+                    count ++
+                    /*let query = `
+                    {
+                        asignatura(codigo_asignatura: ${asig.codigo_asignatura}) {
+                            nombre_asignatura
+                        }
+                    }`
+                    
+                    
+                    const response = await fetch(`${API_ROUTE}${API_URL_BUSCADOR_CURSOS}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "Accept": "application/json",
+                        },
+                        body: JSON.stringify({
+                            query,
+                        })
+                    })
+                    
+                    const data1 = await response.json()
+
+                    arr[count]['nameCourse'] = data1.data.asignatura.nombre_asignatura
+                    count ++
+                    console.log(data1.data.asignatura.nombre_asignatura)*/
+                })
+                return arr
+            })
+    },
+
     formatStudents: (arg) => {
 
         if (arg.student == 'null'){
@@ -223,24 +288,30 @@ export const root = {
                     let newdata = []
                     let course = {}
                     let count = 0
+        
                     data.map((element) => {
+
                         let gradesdata = element['grades']
                         var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                     
                         if (dict[arg.student] != null) {
-
+                            //console.log(element.id_course)
                             if (!Object.keys(course).includes(element.id_course.toString())) {
-                                
+
                                 course[element.id_course] = count
-                                newdata.push({id: count, id_student: arg.student, id_course: element.id_course, grades: {}})
+                              
+                                newdata.push({id: count, id_student: arg.student, id_course: element.id_course, name_asignature: '', grades: {}})
+                                newdata[count]['name_asignature'] = "ARQUITECTURA DE SOFTWARE"
                                 newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                                count++
                             }
                             else {
                                 newdata[course[element.id_course.toString()]]['grades'][element.name] = [element.percentage, dict[arg.student]]
                             }
-                            count ++
+                            
                         }
                     })
-
+                    console.log(newdata)
                     newdata.map((element) => {
                         element['grades'] = JSON.stringify(element['grades'])
                     })
