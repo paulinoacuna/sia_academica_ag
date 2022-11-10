@@ -13,11 +13,11 @@ const routes = {
     route: "/buscador_cursos",
   },
   inscripciones: {
-    url: "http://localhost:4000", //"http://host.docker.internal:4000",
+    url: "http://host.docker.internal:4000", //"http://host.docker.internal:4000",
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://host.docker.internal:8000",
+    url: "http://host.docker.internal:8001",
     route: "/calificaciones",
   },
 };
