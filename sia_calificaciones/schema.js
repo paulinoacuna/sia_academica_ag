@@ -8,17 +8,31 @@ import { buildSchema } from "graphql"
 const schema = buildSchema(`
     type Query {
         listAll: All
-        listGrades(id: Int, course: Int): [Grade]
+        listGrades(id: Int, course: String): [Grade]
         listCourse(id: String, termn: String): [Course]
         listHistory(id: Int, program: Int): [History]
-        getCourseName(id_course: Int): Message
-        formatStudents(course: Int, student: String): [StudentsGrade]
+        getCourseName(id_course: String): Message
+        getStudents(id_course: String): [CursoInscritoFilter]
+        formatStudents(course: String, student: String): [StudentsGrade]
+        getDocAsignatures(documento_identidad: String): [DocAsignatures]
+    }
+
+    type DocAsignatures {
+        id_curso: String
+        documento_profesor: String
+        codigo_asignatura: Int
+        nameCourse: String
+    }
+
+    type CursoInscritoFilter {
+        id_curso: String
+        documento_estudiante: String
     }
 
     type StudentsGrade {
         id: Int
         id_student: String
-        id_course: Int
+        id_course: String
         grades: String
     }
 
@@ -30,14 +44,14 @@ const schema = buildSchema(`
 
     type Grade {
         id: Int
-        id_course: Int
+        id_course: String
         name: String
         percentage: Float
         grades: String
     }
 
     type Course{
-        id: String
+        id: Int
         id_asignature: Int
         term: String
         consolidated: Boolean
@@ -54,7 +68,7 @@ const schema = buildSchema(`
     type Mutation {
         createGrades(
             id: Int
-            id_course: Int
+            id_course: String
             name: String
             percentage: Float
             grades: String
@@ -62,18 +76,18 @@ const schema = buildSchema(`
             
         updateGrades(
             id: Int
-            id_course: Int
+            id_course: String
             name: String
             percentage: Float
             grades: String
             ): Grade
             
         deleteGrades(
-            input: Int
+            input: String
             ): Message
 
         updateCourse(
-            id: Int
+            id: String
             id_asignature: Int
             term: String
             consolidated: Boolean
@@ -84,7 +98,7 @@ const schema = buildSchema(`
             id_student: String
             id_program: Int
             percentage_adv: Float
-            asignature_taken: [Int]
+            asignature_taken: String
             ): History
     }
 

@@ -17,7 +17,7 @@ const routes = {
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://localhost:8000",
+    url: "http://host.docker.internal:8001",
     route: "/calificaciones",
   },
 };
