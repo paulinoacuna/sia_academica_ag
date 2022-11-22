@@ -13,7 +13,7 @@ export const getHistoryData = (args) => `
 
 export const getCurso = (args) => `
     {
-        listCourse(id: ${args}, termn: null) {
+        listCourse(id: "${args}", termn: null) {
             id
             id_asignature
             term
@@ -34,4 +34,24 @@ export const getCalificaciones = (args) => `
             grades
         }
     }
+`
+export const getAsignatura = (args) => `
+    {
+        asignatura(codigo_asignatura: ${args.id_asignature}) {
+            nombre_asignatura
+            creditos
+            tipo {
+                nombre_tipologia
+            }
+        }
+    }
+`
+
+export const getTipologia = (args) => `
+    {
+        tipologia(id_tipologia: ${args.id_tipologia}) {
+            nombre_tipologia
+        }
+    }
+
 `

@@ -1,6 +1,6 @@
 import fetch from "node-fetch"
-import { API_URL, API_URL_CALIFICACIONES } from "./index.js"
-import { getHistoryData, getCurso, getCalificaciones } from "./queries.js";
+import { API_URL, API_URL_CALIFICACIONES, API_URL_BUSCADOR_CURSOS } from "./index.js"
+import { getHistoryData, getCurso, getCalificaciones, getAsignatura, getTipologia } from "./queries.js";
 
 
 
@@ -37,6 +37,9 @@ const refFetch = async (query, route) => {
 export const root = {
     getHistory:  (arg) => {
         return  refFetch(getHistoryData(arg), API_URL_CALIFICACIONES).then( async (response) => {
+           
+
+            //Juliette
 
             const jsonHistory = response.data.listHistory
             const asignatures_taken = jsonHistory[0].asignature_taken
@@ -51,12 +54,19 @@ export const root = {
                 id_cursos_tomados = asignatures_taken
             }
 
-            
+            // console.log(asignatures_taken)
+            // console.log(id_cursos_tomados)
+            //casteo a string
 
             const funJsonCursos = async () => {
 
                 return Promise.all(id_cursos_tomados.map(async (id_curso) => {
-                    return refFetch(getCurso(id_curso), API_URL_CALIFICACIONES).then((response)=>{
+                    
+                    
+                    var curso = id_curso.toString()
+                    // console.log(curso)
+                    return refFetch(getCurso(curso), API_URL_CALIFICACIONES).then((response)=>{
+                        
                         for (const element of response.data.listCourse) {
                             
                             return element
@@ -64,6 +74,7 @@ export const root = {
                     })
                 }))
             }
+
             const jsonCursos = await funJsonCursos()
 
 
@@ -71,7 +82,7 @@ export const root = {
                 return Promise.all(jsonCursos.map(async (curso)=>{
                     
                     return refFetch(getCalificaciones(curso), API_URL_CALIFICACIONES).then((response)=>{
-                        // console.log(response.data.listGrades)
+                        console.log(response)
                         
 
                         return response.data.listGrades
@@ -82,12 +93,53 @@ export const root = {
 
             
 
+             //jahel
+
+            
+
+            const funGetAsignatura = async () => {
+
+                return Promise.all(jsonCursos.map(async (curso) => {
+                    // console.log(curso)
+
+                    return refFetch(getAsignatura(curso), API_URL_BUSCADOR_CURSOS).then((response)=>{
+                        // console.log(response)
+                        //retorna un solo objeto o array?
+                        return response.data
+                    })
+                }))
+            }
+            
+            const jsonAsignaturas = funGetAsignatura()
+            if(jsonAsignaturas == null){
+                console.log("Elemeno no encontrado en el buscador de cursos")
+            }
+                /*
+            const funGetTipologia = async () => {
+
+                return Promise.all(jsonAsignaturas.map(async (asignatura) => {
+                    return refFetch(getTipologia(asignatura), API_URL_BUSCADOR_CURSOS).then((response)=>{
+
+                        //retorna un solo objeto o array?
+                        return response.data.asignatura
+                    })
+                }))
+            }
+            const jsonTipologias = funGetTipologia()
+            */
+
+            //end
+
+
+
+            // console.log(jsonAsignaturas)
 
             const jsonFull = {
                 history: jsonHistory,
                 courses: jsonCursos,
                 grades: jsonCalificaciones
             }
+            console.log(jsonFull)
 
             // console.log(jsonCalificaciones)
 
