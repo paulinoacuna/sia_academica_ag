@@ -19,7 +19,7 @@ type Query {
     _papa: Float
     _pa: Float
     _semestreActual: String
-    _pappi: Int
+    _pappi: Float
     _asignaturasInscritas: [Asignaturas]
     _asignaturas: [Asignaturas]
   }

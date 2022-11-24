@@ -17,7 +17,7 @@ const routes = {
     route: "/inscripciones",
   },
   calificaciones: {
-    url: "http://host.docker.internal:8001",
+    url: "http://host.docker.internal:8000",
     route: "/calificaciones",
   },
 };

@@ -23,10 +23,9 @@ export const getCurso = (args) => `
 `
 
 
-
 export const getCalificaciones = (args) => `
     {
-        listGrades(id: null, course: ${args.id}) {
+        listGrades(id: null, course: "${args.id}") {
             id
             id_course
             name
@@ -35,6 +34,8 @@ export const getCalificaciones = (args) => `
         }
     }
 `
+
+
 export const getAsignatura = (args) => `
     {
         asignatura(codigo_asignatura: ${args.id_asignature}) {
@@ -44,6 +45,7 @@ export const getAsignatura = (args) => `
                 nombre_tipologia
             }
         }
+        
     }
 `
 
