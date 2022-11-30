@@ -5,7 +5,7 @@ const routes = {
     route: "/",
   },
   infoAcademica: {
-    url: "http://localhost:3006",
+    url: "http://host.docker.internal:3006",
     route: "/info_academica",
   },
   buscadorMaterias: {
