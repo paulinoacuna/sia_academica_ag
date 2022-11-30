@@ -216,7 +216,7 @@ export const root = {
 
 
     getDocAsignatures: async (arg) => {
-        let nombre_asignatura = ["ARQUITECTURA DE SOFTWARE", "INGENIERIA DE SOFTWARE I", "INGENIERIA DE SOFTWARE II"]
+        let nombre_asignatura = ["INGENIERIA DE SOFTWARE II", "ARQUITECTURA DE SOFTWARE", "CALCULO INTEGRAL", "CALCULO DIFERENCIAL", "INGENIERIA DE SOFTWARE I", "CALCULO EN VARIAS VARIABLES", "BASES DE DATOS", "ESTRUCTURAS DE DATOS", "ALGORITMOS", "COMPUTACIÓN VISUAL", "INGLÉS"]
         let query = `{
             cursoByProfesor(documento_identidad: "${arg.documento_identidad}")
             {
@@ -227,7 +227,7 @@ export const root = {
                 }
             }
         }`
-
+        var count = 0
         return fetch(`${API_ROUTE}${API_URL_INSCRIPCIONES}`, {
             method: 'POST',
             headers: {
@@ -239,40 +239,21 @@ export const root = {
         })
             .then(response => response.json())
             .then(datas => {
-                let arr = []
-                let count = 0
+                var arr = []
+                
                 datas.data.cursoByProfesor.map(async (asig) => {
                     arr.push({id_curso: asig.id_curso, documento_profesor: arg.documento_identidad, codigo_asignatura: asig.codigo_asignatura, nameCourse: 'h'})
+                    try {
+                        arr[count]['nameCourse'] = nombre_asignatura[asig.codigo_asignatura];
+                    } catch (error) {
+                        arr[count]['nameCourse'] = nombre_asignatura[count];
+                    }
                     
-                    arr[count]['nameCourse'] = nombre_asignatura[count]
-                    count ++
-                    /*let query = `
-                    {
-                        asignatura(codigo_asignatura: ${asig.codigo_asignatura}) {
-                            nombre_asignatura
-                        }
-                    }`
-                    
-                    
-                    const response = await fetch(`${API_ROUTE}${API_URL_BUSCADOR_CURSOS}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            "Accept": "application/json",
-                        },
-                        body: JSON.stringify({
-                            query,
-                        })
-                    })
-                    
-                    const data1 = await response.json()
-
-                    arr[count]['nameCourse'] = data1.data.asignatura.nombre_asignatura
-                    count ++
-                    console.log(data1.data.asignatura.nombre_asignatura)*/
+                    count++;
                 })
                 return arr
             })
+            
     },
 
     formatStudents: (arg) => {
@@ -311,7 +292,7 @@ export const root = {
                             
                         }
                     })
-                    console.log(newdata)
+                    
                     newdata.map((element) => {
                         element['grades'] = JSON.stringify(element['grades'])
                     })
