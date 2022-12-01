@@ -174,6 +174,48 @@ const getSede = async (id) => {
   return data.sede;
 };
 
+const getFacultadesBySede = async (id) => {
+  const query = `query Asignatura($idSede: Int!) {
+    facultadesBySede(id_sede: $idSede) {
+      id_facultad
+      nombre_facultad
+      id_sede
+    }
+  }`;
+  const data = await simpleGraphQLQuery(query, { idSede: id });
+  console.log(data);
+  return data.facultadesBySede;
+};
+
+const getProgramasByFacultad = async (id) => {
+  const query = `query ProgramasByFacultad($idFacultad: Int!) {
+    programasByFacultad(id_facultad: $idFacultad) {
+      id_programa
+      nombre_programa
+      id_facultad
+    }
+  }
+  `;
+  const data = await simpleGraphQLQuery(query, { idFacultad: id });
+  return data.programasByFacultad;
+};
+
+const getAsignaturasByPrograma = async (id) => {
+  const query = `query AsignaturaByPrograma($idPrograma: Int!) {
+    asignaturaByPrograma(id_programa: $idPrograma) {
+      codigo_asignatura
+      creditos
+      descripcion
+      id_programa
+      id_tipologia
+      nombre_asignatura  
+    }
+  }`
+  const data = await simpleGraphQLQuery(query, { idPrograma: id });
+  return data.asignaturaByPrograma;
+};
+
+
 const getPrerequisitos = async (codigo_asignatura) => {
   const query = `query Prerequisito($codigoAsignatura: Int!) {
     prerequisito(codigo_asignatura: $codigoAsignatura) {
@@ -242,7 +284,10 @@ const resolverOperations = {
   getAsignatura,
   getAsignaturasInscribibles,
   getCursos,
-  getProfesor
+  getProfesor,
+  getFacultadesBySede,
+  getProgramasByFacultad,
+  getAsignaturasByPrograma
 };
 
 export default resolverOperations;
