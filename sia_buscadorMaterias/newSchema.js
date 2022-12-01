@@ -104,7 +104,7 @@ const Programa = new GraphQLObjectType({
       type: Facultad,
       resolve: (parent) => resolver.getFacultad(parent.id_facultad),
     },
-    //asignaturas: { type: new GraphQLList(Asignatura) },
+    asignaturas: { type: new GraphQLList(Asignatura), resolve: (parent) => resolver.getAsignaturasByPrograma(parent.id_programa) },
   }),
 });
 
@@ -114,7 +114,7 @@ const Facultad = new GraphQLObjectType({
     id_facultad: { type: GraphQLInt },
     nombre_facultad: { type: GraphQLString },
     sede: { type: Sede, resolve: (parent) => resolver.getSede(parent.id_sede) },
-    //programas: { type: new GraphQLList(Programa) },
+    programas: { type: new GraphQLList(Programa), resolve: (parent) => resolver.getProgramasByFacultad(parent.id_facultad) },
   }),
 });
 
@@ -123,7 +123,7 @@ const Sede = new GraphQLObjectType({
   fields: (parentValue, args) => ({
     id_sede: { type: GraphQLInt },
     nombre_sede: { type: GraphQLString },
-    //facultades: { type: new GraphQLList(Facultad) },
+    facultades: { type: new GraphQLList(Facultad), resolve: (parent) => resolver.getFacultadesBySede(parent.id_sede) },
   }),
 });
 
