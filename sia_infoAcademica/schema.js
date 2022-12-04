@@ -26,6 +26,7 @@ type Query {
 
   type Asignaturas {
     _codigo: Int
+    _id_asignature: Int
     _nombre: String
     _creditos: Int
     _tipo: String
