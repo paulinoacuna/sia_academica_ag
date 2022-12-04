@@ -236,7 +236,8 @@ export const root = {
         }`
         var count = 0
         var arr = []; 
-        let response = await fetch(`${API_ROUTE}${API_URL_INSCRIPCIONES}`, {
+
+        return fetch(`${API_ROUTE}${API_URL_INSCRIPCIONES}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -245,151 +246,88 @@ export const root = {
                 query,
             })
         })
-        
-        let datas = await response.json()
-        await datas.data.cursoByProfesor?.map((asig) => {
-            arr.push({ id_curso: asig.id_curso, documento_profesor: arg.documento_identidad, codigo_asignatura: asig.codigo_asignatura, nameCourse: 'h' });
-            let data = getName(asig.codigo_asignatura)
-            arr[count]['nameCourse'] = data
-            count++;
-        });
-
-
-        return arr;
+            .then(response => response.json())
+            .then(data => {
+                data.data.cursoByProfesor?.map((asig) => {
+                    arr.push({ id_curso: asig.id_curso, documento_profesor: arg.documento_identidad, codigo_asignatura: asig.codigo_asignatura});
+                    count++;
+                });
+                return arr;
+            })
     },
 
     formatStudents: async (arg) => {
         if (arg.student == 'null'){
             arg.student = null
         }
+
         if (arg.student !== null) {
-            const response = await fetch(`${API_URL}/api/grades/`);
-            const data = await response.json();
-            let newdata = [];
-            let course = {};
-            let count = 0;
-            await data?.map((element) => {
+            return fetch(`${API_URL}/api/grades/`)
+                .then(response => response.json())
+                .then(data => {
 
-                let gradesdata = element['grades'];
-                var dict = JSON.parse(gradesdata.replace(/'/g, '"'));
+                    let newdata = []
+                    let course = {}
+                    let count = 0
 
-                if (dict[arg.student] != null) {
-                    //console.log(element.id_course)
-                    if (!Object.keys(course).includes(element.id_course.toString())) {
+                    data.map((element) => {
 
-                        course[element.id_course] = count;
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
 
-                        newdata.push({ id: count, id_student: arg.student, id_course: element.id_course, name_asignature: 'h', grades: {} });
+                        if (dict[arg.student] != null) {
+    
+                            if (!Object.keys(course).includes(element.id_course.toString())) {
 
-                        let name = getNameFormat(element.id_course)
-      
-                        newdata[count]['name_asignature'] = name
-                        newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]];
-                        count++;
-                    }
-                    else {
-                        newdata[course[element.id_course.toString()]]['grades'][element.name] = [element.percentage, dict[arg.student]];
-                    }
+                                course[element.id_course] = count
 
-                }
-            });
-            newdata?.map((element_1) => {
-                element_1['grades'] = JSON.stringify(element_1['grades']);
-            });
-            return newdata;
+                                newdata.push({id: count, id_student: arg.student, id_course: element.id_course, name_asignature: '', grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                                count++
+                            }
+                            else {
+                                newdata[course[element.id_course.toString()]]['grades'][element.name] = [element.percentage, dict[arg.student]]
+                            }
+
+                        }
+                    })
+
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
         }
         else {
             let courses = `?id_course=${arg.course}`
-            const response_1 = await fetch(`${API_URL}/api/grades/${courses}`);
-            const data_1 = await response_1.json();
-            let newdata_1 = [];
-            let users = {};
-
-            let name = getNameFormat(arg.course)
-            data_1?.map((element_2) => {
-                let count_1 = 0;
-                let gradesdata_1 = element_2['grades'];
-                var dict_1 = JSON.parse(gradesdata_1.replace(/'/g, '"'));
-                Object.keys(dict_1).map((grade) => {
-                    if (!Object.keys(users).includes(grade)) {
-                        users[grade] = count_1;
-                        newdata_1.push({ id: count_1, id_student: grade, id_course: element_2.id_course, name_asignature: name, grades: {} });
-                        newdata_1[count_1]['grades'][element_2.name] = [element_2.percentage, dict_1[grade]];
-                        count_1++;
-                    }
-                    else {
-                        newdata_1[users[grade]]['grades'][element_2.name] = [element_2.percentage, dict_1[grade]];
-                    }
-
-                });
-            });
-            newdata_1?.map((element_3) => {
-                element_3['grades'] = JSON.stringify(element_3['grades']);
-            });
-            return newdata_1;
+            return fetch(`${API_URL}/api/grades/${courses}`)
+                .then(response => response.json())
+                .then(data => {
+                    let newdata = []
+                    let users = {}
+                    data.map((element) => {
+                        let count = 0
+                        let gradesdata = element['grades']
+                        var dict = JSON.parse(gradesdata.replace(/'/g,'"'));
+                        Object.keys(dict).map((grade) => {
+                            if (!Object.keys(users).includes(grade)) {
+                                users[grade] = count
+                                newdata.push({id: count, id_student: grade, id_course: element.id_course, grades: {}})
+                                newdata[count]['grades'][element.name] = [element.percentage, dict[grade]]
+                                count ++
+                            }
+                            else {
+                                newdata[users[grade]]['grades'][element.name] = [element.percentage, dict[grade]]
+                            }
+                            
+                        })
+                    })
+                    newdata.map((element) => {
+                        element['grades'] = JSON.stringify(element['grades'])
+                    })
+                    return newdata
+                })
         }
     }
 
-}
-
-async function getName(codigo) {
-    let query = `
-    {
-        asignatura(codigo_asignatura: ${codigo}) {
-            nombre_asignatura
-        }
-    }`
-    
-    let nomCu = ''
-    let response = await fetch(`${API_ROUTE}${API_URL_BUSCADOR_CURSOS}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            "Accept": "application/json",
-        },
-        body: JSON.stringify({
-            query,
-        })
-    })
-
-    let data = await response.json()
-    
-    nomCu = await data.data.asignatura.nombre_asignatura
-
-    return nomCu
-}
-
-async function getNameFormat(codigo_curso) {
-    let termn = `?id=${codigo_curso}`
-    let response0 = await fetch(`${API_URL}/api/courses/${termn}`)
-
-    let data0 = await response0.json()
-    
-    
-    let codigo = data0[0].id_asignature
-    
-    let query = `
-    {
-        asignatura(codigo_asignatura: ${codigo}) {
-            nombre_asignatura
-        }
-    }`
-
-    let nomCu = ''
-    let response = await fetch(`${API_ROUTE}${API_URL_BUSCADOR_CURSOS}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            "Accept": "application/json",
-        },
-        body: JSON.stringify({
-            query,
-        })
-    })
-
-    let data = await response.json()
-    console.log(data)
-    nomCu = await data.data.asignatura.nombre_asignatura
-
-    return nomCu
 }

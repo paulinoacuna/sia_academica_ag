@@ -21,7 +21,6 @@ const schema = buildSchema(`
         id_curso: String
         documento_profesor: String
         codigo_asignatura: Int
-        nameCourse: String
     }
 
     type CursoInscritoFilter {
@@ -32,7 +31,6 @@ const schema = buildSchema(`
     type StudentsGrade {
         id: Int
         id_student: String
-        name_asignature: String
         id_course: String
         grades: String
     }
