@@ -75,7 +75,12 @@ export const root = {
     },
 
     listHistory: (arg) => {
-        if (arg.id == null && arg.program == null) {
+     
+        if (arg.id_student == 'null'){
+            arg.id_student = null
+        }
+        
+        if (arg.id_student == null && arg.program == null) {
             return fetch(`${API_URL}/api/history/`)
                 .then(response => response.json())
                 .then(data => {
@@ -83,7 +88,7 @@ export const root = {
                 })
         }
         else {
-            let program = arg.id !== null ? `?id=${arg.id}` : `?id_program=${arg.program}`
+            let program = arg.id_student !== null ? `?id_student=${arg.id}` : `?id_program=${arg.program}`
 
         return fetch(`${API_URL}/api/history/${program}`)
             .then(response => response.json())
@@ -346,6 +351,7 @@ async function getName(codigo) {
     })
 
     let data = await response.json()
+    
     nomCu = await data.data.asignatura.nombre_asignatura
 
     return nomCu
@@ -359,14 +365,14 @@ async function getNameFormat(codigo_curso) {
     
     
     let codigo = data0[0].id_asignature
-   
+    
     let query = `
     {
         asignatura(codigo_asignatura: ${codigo}) {
             nombre_asignatura
         }
     }`
-    
+
     let nomCu = ''
     let response = await fetch(`${API_ROUTE}${API_URL_BUSCADOR_CURSOS}`, {
         method: 'POST',
@@ -380,6 +386,7 @@ async function getNameFormat(codigo_curso) {
     })
 
     let data = await response.json()
+    console.log(data)
     nomCu = await data.data.asignatura.nombre_asignatura
 
     return nomCu

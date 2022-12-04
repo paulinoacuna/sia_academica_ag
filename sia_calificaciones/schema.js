@@ -10,7 +10,7 @@ const schema = buildSchema(`
         listAll: All
         listGrades(id: Int, course: String): [Grade]
         listCourse(id: String, termn: String): [Course]
-        listHistory(id: Int, program: Int): [History]
+        listHistory(id_student: String, program: Int): [History]
         getCourseName(id_course: String): Message
         getStudents(id_course: String): [CursoInscritoFilter]
         formatStudents(course: String, student: String): [StudentsGrade]
