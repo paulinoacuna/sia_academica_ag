@@ -32,6 +32,7 @@ const schema = buildSchema(`
     type StudentsGrade {
         id: Int
         id_student: String
+        name_asignature: String
         id_course: String
         grades: String
     }
