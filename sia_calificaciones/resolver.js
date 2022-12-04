@@ -75,12 +75,13 @@ export const root = {
     },
 
     listHistory: (arg) => {
-     
-        if (arg.id_student == 'null'){
+        
+        if (arg.id_student == "null"){
             arg.id_student = null
         }
         
         if (arg.id_student == null && arg.program == null) {
+            
             return fetch(`${API_URL}/api/history/`)
                 .then(response => response.json())
                 .then(data => {
@@ -88,8 +89,9 @@ export const root = {
                 })
         }
         else {
-            let program = arg.id_student !== null ? `?id_student=${arg.id}` : `?id_program=${arg.program}`
-
+            
+            let program = arg.id_student !== null ? `?id_student=${arg.id_student}` : `?id_program=${arg.program}`
+      
         return fetch(`${API_URL}/api/history/${program}`)
             .then(response => response.json())
             .then(data => {

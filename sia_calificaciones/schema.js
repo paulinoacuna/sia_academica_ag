@@ -52,7 +52,7 @@ const schema = buildSchema(`
     }
 
     type Course{
-        id: Int
+        id: String
         id_asignature: Int
         term: String
         consolidated: Boolean
