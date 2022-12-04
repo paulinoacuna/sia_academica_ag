@@ -8,7 +8,7 @@ import { buildSchema } from "graphql"
 const schema = buildSchema(`
 
 type Query {
-  getHistory(id: Int): [History]
+  getHistory(id: String): [History]
 }
 
   type History {
