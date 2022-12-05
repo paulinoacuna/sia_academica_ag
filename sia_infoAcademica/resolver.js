@@ -33,26 +33,24 @@ const refFetch = async (query, route) => {
 export const root = {
     getHistory:  (arg) => {
         return  refFetch(getHistoryData(arg), API_URL_CALIFICACIONES).then( async (response) => {
-            console.log("ARGUMENTOS:" + arg)
+            
            
 
             //Juliette
-            console.log("RESPUESTA: ")
-            console.log(response)
-            console.log(response.data)
+            
             
 
             const jsonHistory = response.data.listHistory
             console.log(jsonHistory)
-            const asignatures_taken = jsonHistory.asignature_taken
-            console.log(asignatures_taken)
+            const asignatures_taken = jsonHistory[0].asignature_taken
             
+            console.log(typeof asignatures_taken)
+
+
             let id_cursos_tomados = []
 
             if (typeof asignatures_taken === "string") {
                 id_cursos_tomados = JSON.parse(asignatures_taken);
-            }else if (typeof asignatures_taken === "object") {
-                id_cursos_tomados = asignatures_taken
             }
 
             const funJsonCursos = async () => {
@@ -102,7 +100,7 @@ export const root = {
                 i++
             });
 
-
+            console.log(jsonCursos)
             const jsonFull = {
                 history: jsonHistory,
                 courses: jsonCursos,
