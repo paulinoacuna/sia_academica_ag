@@ -1,6 +1,6 @@
 export const getHistoryData = (args) => `
     {
-        listHistory(id: "${args}", program: null) {
+        listHistory(id_student: "${args}", program: null) {
             id
             id_student
             id_program
