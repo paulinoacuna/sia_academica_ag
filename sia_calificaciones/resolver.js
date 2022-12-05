@@ -76,11 +76,10 @@ export const root = {
 
     listHistory: (arg) => {
         
-        if (arg == "null"){
-            arg = null
+        if (arg.id_student == "null"){
+            arg.id_student = null
         }
-        
-        if (arg == null && arg.program == null) {
+        if (arg.id_student == null && arg.program == null) {
             
             return fetch(`${API_URL}/api/history/`)
                 .then(response => response.json())
@@ -90,14 +89,14 @@ export const root = {
         }
         else {
             
-            let program = arg !== null ? `?id_student=${arg}` : `?id_program=${arg.program}`
-      
-        return fetch(`${API_URL}/api/history/${program}`)
-            .then(response => response.json())
-            .then(data => {
-                return data
-            })
-        }
+            let program = arg.id_student !== null ? `?id_student=${arg.id_student}` : `?id_program=${arg.program}`
+            
+            return fetch(`${API_URL}/api/history/${program}`)
+                .then(response => response.json())
+                .then(data => {
+                    return data
+                })
+            }
     },
 
     createGrades: (arg) => {
