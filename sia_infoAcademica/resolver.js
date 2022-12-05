@@ -33,9 +33,11 @@ const refFetch = async (query, route) => {
 export const root = {
     getHistory:  (arg) => {
         return  refFetch(getHistoryData(arg), API_URL_CALIFICACIONES).then( async (response) => {
+            console.log("ARGUMENTOS:" + arg)
            
 
             //Juliette
+            console.log(response.data)
 
             const jsonHistory = response.data.listHistory
             const asignatures_taken = jsonHistory[0].asignature_taken
