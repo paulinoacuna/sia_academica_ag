@@ -37,11 +37,15 @@ export const root = {
            
 
             //Juliette
+            console.log("RESPUESTA: ")
+            console.log(response)
             console.log(response.data)
+            
 
             const jsonHistory = response.data.listHistory
-            const asignatures_taken = jsonHistory[0].asignature_taken
-
+            console.log(jsonHistory)
+            const asignatures_taken = jsonHistory.asignature_taken
+            console.log(asignatures_taken)
             
             let id_cursos_tomados = []
 
